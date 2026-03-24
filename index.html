@@ -274,7 +274,7 @@
 
 <div class="app-header">
     <div>
-        <h1>SWAGAT HAI APKA RAJAT AUR SHANKAR KE PAPA KE DARBAR ME</h1>
+        <h1>SWAGAT HAI APKA RAJAT & SHANKAR KE PAPA KE DARBAR ME</h1>
         <div class="subtitle">STATIC TOPICS PRACTICE DASHBOARD</div>
     </div>
     <div id="timer">15:00</div>
@@ -4390,6 +4390,7 @@ const app = {
     viewMode: 'normal',
     paletteVisible: true,
     pendingSetInfo: null, // { topic, setNum, setQs }
+    parsedBanks: {}, // Stores the shuffled questions for the session
 
     init() {
         this.renderTopicGrids();
@@ -4406,11 +4407,29 @@ const app = {
         if (tab === 'blunders' || tab === 'saved') this.updateAuxGrids();
     },
 
+    // Randomizes the array elements
+    shuffleArray(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    },
+
     renderTopicGrids() {
         const grid = document.getElementById('grid-topics');
         if (!grid) return;
+        
         grid.innerHTML = TOPICS.map(topic => {
-            const allQs = this.parseData(CA_DATA[topic] || "");
+            // Parse and shuffle questions once per session
+            if (!this.parsedBanks[topic]) {
+                let parsed = this.parseData(CA_DATA[topic] || "");
+                this.parsedBanks[topic] = this.shuffleArray(parsed); 
+            }
+            const allQs = this.parsedBanks[topic];
+            
             const totalSets = allQs.length > 0 ? Math.ceil(allQs.length / 50) : 0;
             const attemptsForTopic = this.attempts[topic] || {};
             const totalAttempts = Object.values(attemptsForTopic).reduce((sum, arr) => sum + arr.length, 0);
@@ -4425,7 +4444,7 @@ const app = {
 
     showTopicSets(topic) {
         this.currentTopic = topic;
-        const allQs = this.parseData(CA_DATA[topic] || "");
+        const allQs = this.parsedBanks[topic] || [];
         this.hideScreens();
         document.getElementById('screen-sets').classList.add('active');
         document.getElementById('set-title').innerText = `${topic.toUpperCase()}`;
@@ -4495,8 +4514,9 @@ const app = {
         if (!info) return;
         const att = this.attempts[info.topic][info.setNum][attIdx];
         this.closeModal();
-        // Reconstruct analysis view from saved attempt
-        this.questions = info.setQs;
+        
+        // Reconstruct analysis view from saved attempt using saved Exact Question Order
+        this.questions = att.testQs || info.setQs; 
         this.userAns = att.userAns || {};
         this.currentTopic = info.topic;
         this.currentSetNum = info.setNum;
@@ -4614,13 +4634,14 @@ const app = {
         const score = (r * 2) - (w * 0.5);
         this.lastStats = { score, r, w, s };
 
-        // Save attempt
+        // Save attempt + exact question layout
         if (!this.attempts[key]) this.attempts[key] = {};
         if (!this.attempts[key][this.currentSetNum]) this.attempts[key][this.currentSetNum] = [];
         this.attempts[key][this.currentSetNum].push({
             date: new Date().toLocaleString(),
             score, r, w, s,
-            userAns: { ...this.userAns }
+            userAns: { ...this.userAns },
+            testQs: JSON.parse(JSON.stringify(this.questions)) // Saves the randomly shuffled layout
         });
 
         localStorage.setItem('ca_attempts', JSON.stringify(this.attempts));
@@ -4738,7 +4759,7 @@ const app = {
         document.getElementById('analysis-list').innerHTML = html;
     },
 
-    // --- UPDATED PARSER: Detects "Q.1 - Question" and "Correct Answer: B" ---
+    // --- PARSER ---
     parseData(raw) {
         if (!raw) return [];
         
@@ -4767,7 +4788,6 @@ const app = {
                 }
             });
 
-            // Cleans up any leftover dashes at the very start of the question string
             qText = qText.replace(/^-?\s*/, '').trim();
 
             let correctIndex = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 }[ans.charAt(0)];
