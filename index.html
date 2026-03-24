@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>simplicrack static gk by shubham daddy</title>
+<title>CURRENT AFFAIRS BY SHUBHAM DADDY</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   @font-face {
@@ -14,16 +14,16 @@
 </style>
 <style>
     :root {
-        --bg: #000000;
-        --surface: #0a0a0a;
-        --card: #0f0f0f;
-        --border: #1e1e1e;
+        --bg: #2d2d2d;       /* Dark Grey Background */
+        --surface: #3a3a3a;  /* Lighter Grey for panels */
+        --card: #1a1a1a;     /* Darker cards for contrast */
+        --border: #404040;   
         --neon-yellow: #f0e040;
         --sky: #38bdf8;
         --succ: #4ade80;
         --err: #f87171;
         --text: #ffffff;
-        --muted: #64748b;
+        --muted: #9ca3af;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
@@ -274,7 +274,7 @@
 
 <div class="app-header">
     <div>
-        <h1>SWAGAT HAI APKA RAJAT AUR SHANKAR KE PAPA KE DARBAR ME</h1>
+        <h1>MOCK TEST PORTAL BY RAJAT KE PAPA</h1>
         <div class="subtitle">STATIC TOPICS PRACTICE DASHBOARD</div>
     </div>
     <div id="timer">15:00</div>
@@ -390,11 +390,11 @@ for (let i = 1; i <= 100; i++) {
 
 // =====================================================
 // ADD YOUR QUESTIONS BELOW IN THIS EXACT FORMAT
-// (I left one sample question in Static 1 for you)
+// (Includes your new format requirement: "Correct Answer: B" and "Q.1 - Question")
 // =====================================================
 const CA_DATA = {
-    "FOLK DANCES OF INDIA": `
-Q.1 Q.1 - Which dance is performed by women during Eid and Ramzan in J&K?
+    "Static 1": `
+Q.1 - Which dance is performed by women during Eid and Ramzan in J&K?
 A. Dumhal
 B. Rouf
 C. Hikat
@@ -4271,9 +4271,9 @@ A. Puducherry
 B. Lakshadweep
 C. Ladakh
 D. Andaman
-Correct Answer: C`
+Correct Answer: C
 
-,
+`,
     "Static 2": ``,
     "Static 3": ``,
     "Static 4": ``,
@@ -4743,26 +4743,42 @@ const app = {
         document.getElementById('analysis-list').innerHTML = html;
     },
 
+    // --- UPDATED PARSER: Detects "Q.1 - Question" and "Correct Answer: B" ---
     parseData(raw) {
         if (!raw) return [];
-        return raw.trim().split(/Q\.\d+/).filter(b => b.trim()).map(block => {
+        
+        // Splits by "Q.1", "Q.2", etc., handling optional dashes and spaces
+        return raw.trim().split(/Q\.\d+\s*-?\s*/).filter(b => b.trim()).map(block => {
             const lines = block.split('\n').map(l => l.trim()).filter(l => l);
             let qText = "", options = [], ans = "", exp = "", exam = "", instr = "";
+            
             lines.forEach(l => {
+                const lowerL = l.toLowerCase();
                 if (l.startsWith('A.')) options[0] = l.slice(2).trim();
                 else if (l.startsWith('B.')) options[1] = l.slice(2).trim();
                 else if (l.startsWith('C.')) options[2] = l.slice(2).trim();
                 else if (l.startsWith('D.')) options[3] = l.slice(2).trim();
-                else if (l.startsWith('Ans:')) ans = l.slice(4).trim().toUpperCase();
-                else if (l.startsWith('Exp:')) exp = l.slice(4).trim();
-                else if (l.startsWith('Exam:')) exam = l.slice(5).trim();
-                else { if (l.toLowerCase().includes('select') || l.toLowerCase().includes('choose')) instr = l; else qText += l + " "; }
+                
+                // Matches "Correct Answer: X"
+                else if (lowerL.startsWith('correct answer:')) ans = l.substring(15).trim().toUpperCase();
+                // Fallback for "Ans: X"
+                else if (lowerL.startsWith('ans:')) ans = l.substring(4).trim().toUpperCase();
+                
+                else if (lowerL.startsWith('exp:')) exp = l.substring(4).trim();
+                else if (lowerL.startsWith('exam:')) exam = l.substring(5).trim();
+                else { 
+                    if (lowerL.includes('select ') || lowerL.includes('choose ')) instr = l; 
+                    else qText += l + " "; 
+                }
             });
-            // Protect against malformed questions mapping
+
+            // Cleans up any leftover dashes at the very start of the question string
+            qText = qText.replace(/^-?\s*/, '').trim();
+
             let correctIndex = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 }[ans.charAt(0)];
             if(correctIndex === undefined) correctIndex = 0; 
             
-            return { instr, q: qText.trim(), options, correct: correctIndex, exp, exam };
+            return { instr, q: qText, options, correct: correctIndex, exp, exam };
         });
     },
 
