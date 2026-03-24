@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Mock Test Portal</title>
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-hover: #0d9488;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; }
+        
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { background: var(--card-bg); padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+        
+        h1, h2, h3 { color: var(--primary); margin-top: 0; }
+        button { background-color: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; transition: 0.2s; font-weight: bold;}
+        button:hover { background-color: var(--primary-hover); }
+        button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+
+        /* Dashboard */
+        #dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        .topic-card { background: white; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; cursor: pointer; transition: transform 0.2s; text-align: center;}
+        .topic-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--primary);}
+        .topic-count { font-size: 0.85rem; color: #64748b; margin-top: 5px; }
+
+        /* Topic View */
+        #topic-view, #test-phase, #result-phase { display: none; }
+        .sets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 20px; }
+        .set-btn { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; padding: 15px; border-radius: 6px; text-align: center; cursor: pointer; font-weight: bold;}
+        .set-btn:hover { background: #bae6fd; }
+
+        /* Test Interface */
+        .test-layout { display: grid; gap: 20px; grid-template-columns: 1fr 250px; }
+        .options-list { list-style: none; padding: 0; }
+        .options-list label { display: block; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; margin-bottom: 10px;}
+        .options-list label:hover { background: #f8fafc; }
+        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 20px; }
+        .nav-btn { padding: 8px 0; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-size: 0.85rem;}
+        .nav-btn.answered { background: var(--primary); color: white; border-color: var(--primary); }
+        .nav-btn.active { outline: 2px solid #0f172a; }
+        
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;}
+
+        /* Results */
+        .review-item { border-bottom: 1px solid #e2e8f0; padding: 15px 0; }
+        .correct-text { color: var(--success); font-weight: bold; }
+        .wrong-text { color: var(--danger); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="dashboard-phase">
+        <div class="header-bar">
+            <h1>Mock Test Dashboard</h1>
+            <p style="color: #64748b;">Questions are loaded directly from the code.</p>
+        </div>
+        <div id="dashboard" class="card" style="display: grid;"></div>
+    </div>
+
+    <div id="topic-view" class="card">
+        <div class="header-bar">
+            <h2 id="current-topic-title">Topic Name</h2>
+            <button onclick="goHome()">Back to Dashboard</button>
+        </div>
+        
+        <h3>Available Mock Tests</h3>
+        <p style="font-size: 0.9rem; color: #64748b;">Questions are automatically grouped into sets of 50.</p>
+        <div id="sets-container" class="sets-grid"></div>
+    </div>
+
+    <div id="test-phase" class="card">
+        <div class="header-bar">
+            <h2 id="test-title">Test</h2>
+            <button onclick="goHome()" style="background: #64748b;">Abort Test</button>
+        </div>
+        <div class="test-layout">
+            <div>
+                <h3 id="question-text">Q?</h3>
+                <ul class="options-list" id="options-container"></ul>
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <button id="btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button id="btn-next" onclick="changeQ(1)">Next</button>
+                </div>
+            </div>
+            <div>
+                <h3>Navigation</h3>
+                <div id="nav-container" class="nav-grid"></div>
+                <button onclick="submitTest()" style="width: 100%; background: var(--success); margin-top: 10px;">Submit Test</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-phase" class="card">
+        <div class="header-bar">
+            <h2>Test Results</h2>
+            <button onclick="goHome()">Back to Dashboard</button>
+        </div>
+        <h1 id="score-display" style="text-align: center; color: var(--success); font-size: 3rem;"></h1>
+        <div id="review-container"></div>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // ⬇️ PASTE YOUR QUESTIONS IN THE SLOTS BELOW ⬇️
+    // Format: Question No.- [ Question Text]
+       option A
+       option B
+       option C
+       option D
+       correct Answer: A
+    // ==========================================
+    
+    const RAW_DATA = {
+        "Static 1": ``,
+        "Static 2": ``,
+        "Static 3": ``,
+        "Static 4": ``,
+        "Static 5": ``,
+        "Static 6": ``,
+        "Static 7": ``,
+        "Static 8": ``,
+        "Static 9": ``,
+        "Static 10": ``,
+        "Static 11": ``,
+        "Static 12": ``,
+        "Static 13": ``,
+        "Static 14": ``,
+        "Static 15": ``,
+        "Static 16": ``,
+        "Static 17": ``,
+        "Static 18": ``,
+        "Static 19": ``,
+        "Static 20": ``,
+        "Static 21": ``,
+        "Static 22": ``,
+        "Static 23": ``,
+        "Static 24": ``,
+        "Static 25": ``,
+        "Static 26": ``,
+        "Static 27": ``,
+        "Static 28": ``,
+        "Static 29": ``,
+        "Static 30": ``,
+        "Static 31": ``,
+        "Static 32": ``,
+        "Static 33": ``,
+        "Static 34": ``,
+        "Static 35": ``,
+        "Static 36": ``,
+        "Static 37": ``,
+        "Static 38": ``,
+        "Static 39": ``,
+        "Static 40": ``,
+        "Static 41": ``,
+        "Static 42": ``,
+        "Static 43": ``,
+        "Static 44": ``,
+        "Static 45": ``,
+        "Static 46": ``,
+        "Static 47": ``,
+        "Static 48": ``,
+        "Static 49": ``,
+        "Static 50": ``,
+        "Static 51": ``,
+        "Static 52": ``,
+        "Static 53": ``,
+        "Static 54": ``,
+        "Static 55": ``,
+        "Static 56": ``,
+        "Static 57": ``,
+        "Static 58": ``,
+        "Static 59": ``,
+        "Static 60": ``,
+        "Static 61": ``,
+        "Static 62": ``,
+        "Static 63": ``,
+        "Static 64": ``,
+        "Static 65": ``,
+        "Static 66": ``,
+        "Static 67": ``,
+        "Static 68": ``,
+        "Static 69": ``,
+        "Static 70": ``,
+        "Static 71": ``,
+        "Static 72": ``,
+        "Static 73": ``,
+        "Static 74": ``,
+        "Static 75": ``,
+        "Static 76": ``,
+        "Static 77": ``,
+        "Static 78": ``,
+        "Static 79": ``,
+        "Static 80": ``,
+        "Static 81": ``,
+        "Static 82": ``,
+        "Static 83": ``,
+        "Static 84": ``,
+        "Static 85": ``,
+        "Static 86": ``,
+        "Static 87": ``,
+        "Static 88": ``,
+        "Static 89": ``,
+        "Static 90": ``,
+        "Static 91": ``,
+        "Static 92": ``,
+        "Static 93": ``,
+        "Static 94": ``,
+        "Static 95": ``,
+        "Static 96": ``,
+        "Static 97": ``,
+        "Static 98": ``,
+        "Static 99": ``,
+        "Static 100": ``
+    };
+
+    // ==========================================
+    // APP LOGIC (Do not edit below unless changing features)
+    // ==========================================
+
+    const SET_SIZE = 50;
+    let questionBank = {};
+    let activeTopic = "";
+    let activeSet = [];
+    let currentQIndex = 0;
+    let userAnswers = {};
+
+    // 1. Parse the hardcoded text on startup
+    function parseAllData() {
+        for (const [topicName, rawText] of Object.entries(RAW_DATA)) {
+            questionBank[topicName] = [];
+            if (!rawText.trim()) continue; // Skip empty slots
+
+            const blocks = rawText.split(/\n\s*\n/);
+            
+            blocks.forEach(block => {
+                const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+                let qObj = { options: [] };
+                
+                lines.forEach(line => {
+                    const lower = line.toLowerCase();
+                    if (lower.startsWith('question:')) qObj.question = line.substring(9).trim();
+                    else if (lower.startsWith('correct:')) qObj.correct = line.substring(8).trim().charAt(0).toUpperCase();
+                    else if (/^[A-Z][\)\.\-]/i.test(line)) {
+                        qObj.options.push({ letter: line.charAt(0).toUpperCase(), text: line });
+                    }
+                });
+
+                if(qObj.question && qObj.options.length > 0 && qObj.correct) {
+                    questionBank[topicName].push(qObj);
+                }
+            });
+        }
+    }
+
+    // --- DASHBOARD LOGIC ---
+    function initDashboard() {
+        parseAllData(); // Parse everything fresh
+        const dash = document.getElementById('dashboard');
+        dash.innerHTML = '';
+        
+        for (const topic in questionBank) {
+            const count = questionBank[topic].length;
+            const sets = Math.ceil(count / SET_SIZE);
+            const bgStyle = count > 0 ? "background: #f0fdf4; border-color: #bbf7d0;" : "";
+            
+            dash.innerHTML += `
+                <div class="topic-card" style="${bgStyle}" onclick="openTopic('${topic}')">
+                    <strong>${topic}</strong>
+                    <div class="topic-count">${count} Qs | ${sets} Sets</div>
+                </div>
+            `;
+        }
+        showPhase('dashboard-phase');
+    }
+
+    // --- TOPIC LOGIC ---
+    function openTopic(topic) {
+        activeTopic = topic;
+        document.getElementById('current-topic-title').innerText = topic;
+        renderSets();
+        showPhase('topic-view');
+    }
+
+    function renderSets() {
+        const container = document.getElementById('sets-container');
+        container.innerHTML = '';
+        const totalQs = questionBank[activeTopic].length;
+        const totalSets = Math.ceil(totalQs / SET_SIZE);
+
+        if(totalSets === 0) {
+            container.innerHTML = '<p style="color: #64748b; grid-column: 1/-1;">No questions parsed yet. Paste them in the RAW_DATA code slot!</p>';
+            return;
+        }
+
+        for(let i = 0; i < totalSets; i++) {
+            const start = i * SET_SIZE;
+            const end = Math.min(start + SET_SIZE, totalQs);
+            container.innerHTML += `
+                <div class="set-btn" onclick="startTest(${i})">
+                    Set ${i + 1}<br>
+                    <span style="font-size: 0.8rem; font-weight: normal;">(Qs ${start + 1} - ${end})</span>
+                </div>
+            `;
+        }
+    }
+
+    // --- TEST LOGIC ---
+    function startTest(setIndex) {
+        const start = setIndex * SET_SIZE;
+        activeSet = questionBank[activeTopic].slice(start, start + SET_SIZE);
+        userAnswers = {};
+        currentQIndex = 0;
+        
+        document.getElementById('test-title').innerText = `${activeTopic} - Set ${setIndex + 1}`;
+        buildNav();
+        loadQ(0);
+        showPhase('test-phase');
+    }
+
+    function buildNav() {
+        const nav = document.getElementById('nav-container');
+        nav.innerHTML = '';
+        activeSet.forEach((_, i) => {
+            nav.innerHTML += `<div class="nav-btn" id="nav-btn-${i}" onclick="loadQ(${i})">${i + 1}</div>`;
+        });
+    }
+
+    function loadQ(index) {
+        currentQIndex = index;
+        const q = activeSet[index];
+        document.getElementById('question-text').innerText = `${index + 1}. ${q.question}`;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        q.options.forEach(opt => {
+            const checked = userAnswers[index] === opt.letter ? 'checked' : '';
+            optsContainer.innerHTML += `
+                <label>
+                    <input type="radio" name="q_opt" value="${opt.letter}" onchange="saveAns('${opt.letter}')" ${checked}>
+                    ${opt.text}
+                </label>
+            `;
+        });
+
+        document.getElementById('btn-prev').disabled = index === 0;
+        document.getElementById('btn-next').disabled = index === activeSet.length - 1;
+        updateNavUI();
+    }
+
+    function saveAns(letter) {
+        userAnswers[currentQIndex] = letter;
+        updateNavUI();
+    }
+
+    function updateNavUI() {
+        activeSet.forEach((_, i) => {
+            const btn = document.getElementById(`nav-btn-${i}`);
+            btn.className = `nav-btn ${userAnswers[i] ? 'answered' : ''} ${i === currentQIndex ? 'active' : ''}`;
+        });
+    }
+
+    function changeQ(dir) { loadQ(currentQIndex + dir); }
+
+    // --- RESULTS LOGIC ---
+    function submitTest() {
+        if(!confirm("Submit test?")) return;
+        let score = 0;
+        let reviewHTML = '';
+
+        activeSet.forEach((q, i) => {
+            const ans = userAnswers[i];
+            if(ans === q.correct) score++;
+            
+            const ansText = ans ? `Your Answer: ${ans}` : "Not Attempted";
+            const cssClass = ans === q.correct ? 'correct-text' : 'wrong-text';
+
+            reviewHTML += `
+                <div class="review-item">
+                    <p><strong>${i + 1}. ${q.question}</strong></p>
+                    <p class="${cssClass}">${ansText} | Correct: ${q.correct}</p>
+                </div>
+            `;
+        });
+
+        document.getElementById('score-display').innerText = `${score} / ${activeSet.length}`;
+        document.getElementById('review-container').innerHTML = reviewHTML;
+        showPhase('result-phase');
+    }
+
+    // --- UTILS ---
+    function showPhase(phaseId) {
+        ['dashboard-phase', 'topic-view', 'test-phase', 'result-phase'].forEach(id => {
+            document.getElementById(id).style.display = id === phaseId ? 'block' : 'none';
+        });
+        if(phaseId === 'dashboard-phase') {
+            // Re-render dashboard without re-parsing to save time
+            document.getElementById('dashboard').style.display = 'grid';
+        }
+    }
+
+    function goHome() { showPhase('dashboard-phase'); }
+
+    // Start App
+    initDashboard();
+</script>
+
+</body>
+</html>
