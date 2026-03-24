@@ -8,7 +8,7 @@
         :root {
             --primary: #0f766e;
             --primary-hover: #0d9488;
-            --bg-color: #f1f5f9;
+            --bg-color: #d1d5db; /* Grey background */
             --card-bg: #ffffff;
             --text-main: #1e293b;
             --success: #16a34a;
@@ -112,21 +112,32 @@
 <script>
     // ==========================================
     // ⬇️ PASTE YOUR QUESTIONS IN THE SLOTS BELOW ⬇️
-    // Format: Question No.- [ Question Text]
-       option A
-       option B
-       option C
-       option D
-       correct Answer: A
+    // Format: Question: ... \n A) ... \n B) ... \n Correct: A
     // ==========================================
     
     const RAW_DATA = {
-        "Static 1": `Q1. what is your name
-                         A. shubham
-                         B. Rajat
-                         C. Sagar
-                         D. Parth
-                         correct Answer: A`,
+        "Static 1": `
+Question: What is the capital of Australia?
+A) Sydney
+B) Melbourne
+C) Canberra
+D) Perth
+Correct: C
+
+Question: Who wrote the play "Romeo and Juliet"?
+A) Charles Dickens
+B) William Shakespeare
+C) Jane Austen
+D) Mark Twain
+Correct: B
+
+Question: What is the chemical symbol for Gold?
+A) Ag
+B) Au
+C) Fe
+D) Pb
+Correct: B
+        `,
         "Static 2": ``,
         "Static 3": ``,
         "Static 4": ``,
@@ -239,48 +250,60 @@
     let currentQIndex = 0;
     let userAnswers = {};
 
-    // 1. Parse the hardcoded text on startup
+    // 1. Parse the hardcoded text safely
     function parseAllData() {
+        questionBank = {}; // Reset to prevent duplicates
+        
         for (const [topicName, rawText] of Object.entries(RAW_DATA)) {
-            questionBank[topicName] = [];
-            if (!rawText.trim()) continue; // Skip empty slots
-
-            const blocks = rawText.split(/\n\s*\n/);
+            questionBank[topicName] = []; // Guarantee the folder exists
             
-            blocks.forEach(block => {
-                const lines = block.split('\n').map(l => l.trim()).filter(l => l);
-                let qObj = { options: [] };
+            // If the slot is empty or missing, just leave it as 0 questions and move on
+            if (!rawText || !rawText.trim()) continue; 
+
+            try {
+                const blocks = rawText.split(/\n\s*\n/);
                 
-                lines.forEach(line => {
-                    const lower = line.toLowerCase();
-                    if (lower.startsWith('question:')) qObj.question = line.substring(9).trim();
-                    else if (lower.startsWith('correct:')) qObj.correct = line.substring(8).trim().charAt(0).toUpperCase();
-                    else if (/^[A-Z][\)\.\-]/i.test(line)) {
-                        qObj.options.push({ letter: line.charAt(0).toUpperCase(), text: line });
+                blocks.forEach(block => {
+                    const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+                    let qObj = { options: [] };
+                    
+                    lines.forEach(line => {
+                        const lower = line.toLowerCase();
+                        if (lower.startsWith('question:')) qObj.question = line.substring(9).trim();
+                        else if (lower.startsWith('correct:')) qObj.correct = line.substring(8).trim().charAt(0).toUpperCase();
+                        else if (/^[A-Z][\)\.\-]/i.test(line)) {
+                            qObj.options.push({ letter: line.charAt(0).toUpperCase(), text: line });
+                        }
+                    });
+
+                    // Only add if it's a complete, valid question
+                    if(qObj.question && qObj.options.length > 0 && qObj.correct) {
+                        questionBank[topicName].push(qObj);
                     }
                 });
-
-                if(qObj.question && qObj.options.length > 0 && qObj.correct) {
-                    questionBank[topicName].push(qObj);
-                }
-            });
+            } catch (e) {
+                console.error(`Error parsing topic: ${topicName}`, e);
+            }
         }
     }
 
     // --- DASHBOARD LOGIC ---
     function initDashboard() {
-        parseAllData(); // Parse everything fresh
+        parseAllData(); 
         const dash = document.getElementById('dashboard');
         dash.innerHTML = '';
         
-        for (const topic in questionBank) {
-            const count = questionBank[topic].length;
+        // Force the dashboard to draw all 100 keys from RAW_DATA
+        for (const topicName of Object.keys(RAW_DATA)) {
+            const count = (questionBank[topicName] && questionBank[topicName].length) ? questionBank[topicName].length : 0;
             const sets = Math.ceil(count / SET_SIZE);
+            
+            // Highlight folders green if they have questions inside
             const bgStyle = count > 0 ? "background: #f0fdf4; border-color: #bbf7d0;" : "";
             
             dash.innerHTML += `
-                <div class="topic-card" style="${bgStyle}" onclick="openTopic('${topic}')">
-                    <strong>${topic}</strong>
+                <div class="topic-card" style="${bgStyle}" onclick="openTopic('${topicName}')">
+                    <strong>${topicName}</strong>
                     <div class="topic-count">${count} Qs | ${sets} Sets</div>
                 </div>
             `;
@@ -299,11 +322,13 @@
     function renderSets() {
         const container = document.getElementById('sets-container');
         container.innerHTML = '';
-        const totalQs = questionBank[activeTopic].length;
+        
+        const topicData = questionBank[activeTopic] || [];
+        const totalQs = topicData.length;
         const totalSets = Math.ceil(totalQs / SET_SIZE);
 
         if(totalSets === 0) {
-            container.innerHTML = '<p style="color: #64748b; grid-column: 1/-1;">No questions parsed yet. Paste them in the RAW_DATA code slot!</p>';
+            container.innerHTML = '<p style="color: #64748b; grid-column: 1/-1;">No questions parsed yet. Paste your formatted questions into the code for this topic to generate sets!</p>';
             return;
         }
 
@@ -409,7 +434,6 @@
             document.getElementById(id).style.display = id === phaseId ? 'block' : 'none';
         });
         if(phaseId === 'dashboard-phase') {
-            // Re-render dashboard without re-parsing to save time
             document.getElementById('dashboard').style.display = 'grid';
         }
     }
