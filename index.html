@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CURRENT AFFAIRS BY SHUBHAM DADDY</title>
+<title>SIMPLICRACK STATIC GK BY SHUBHAM DADDY</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   @font-face {
@@ -274,7 +274,7 @@
 
 <div class="app-header">
     <div>
-        <h1>MOCK TEST PORTAL BY RAJAT KE PAPA</h1>
+        <h1>SWAGAT HAI APKA RAJAT AUR SHANKAR KE PAPA KE DARBAR ME</h1>
         <div class="subtitle">STATIC TOPICS PRACTICE DASHBOARD</div>
     </div>
     <div id="timer">15:00</div>
@@ -381,19 +381,12 @@
 
 <script>
 // =====================================================
-// 100 STATIC TOPICS GENERATOR
-// =====================================================
-const TOPICS = [];
-for (let i = 1; i <= 100; i++) {
-    TOPICS.push("Static " + i);
-}
-
-// =====================================================
 // ADD YOUR QUESTIONS BELOW IN THIS EXACT FORMAT
-// (Includes your new format requirement: "Correct Answer: B" and "Q.1 - Question")
+// To rename a topic, just change the text inside the quotes!
+// Example: "Static 3" can be changed to "FESTIVALS OF INDIA"
 // =====================================================
 const CA_DATA = {
-    "Static 1": `
+    "FOLK DANCES OF INDIA": `
 Q.1 - Which dance is performed by women during Eid and Ramzan in J&K?
 A. Dumhal
 B. Rouf
@@ -4272,9 +4265,8 @@ B. Lakshadweep
 C. Ladakh
 D. Andaman
 Correct Answer: C
-
 `,
-    "Static 2": ``,
+    "MARTIAL ARTS OF INDIA": ``,
     "Static 3": ``,
     "Static 4": ``,
     "Static 5": ``,
@@ -4374,6 +4366,9 @@ Correct Answer: C
     "Static 99": ``,
     "Static 100": ``
 };
+
+// Auto-generates the TOPICS array directly from whatever names you put in CA_DATA above
+const TOPICS = Object.keys(CA_DATA);
 
 // =====================================================
 // APP LOGIC
