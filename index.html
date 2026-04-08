@@ -292,7 +292,7 @@
         <h1>SWAGAT HAI APKA RAJAT & SHANKAR KE PAPA KE DARBAR ME</h1>
         <div class="subtitle">STATIC TOPICS PRACTICE DASHBOARD</div>
     </div>
-    <div id="timer">15:00</div>
+    <div id="timer">20:00</div>
 </div>
 
 <div class="modal-overlay" id="set-modal">
@@ -64582,7 +64582,7 @@ const app = {
     visited: new Set(),
     bookmarks: new Set(),
     currentIdx: 0,
-    timer: 900,
+    timer: 1200,
     interval: null,
     currentTopic: "",
     currentSetNum: 1,
@@ -64596,6 +64596,16 @@ const app = {
     parsedBanks: {}, // Stores the shuffled questions for the session
 
     init() {
+        // Clear saved messages and mistakes ONLY on the very first time the website is opened.
+        // After that, history is always preserved across restarts/reopens.
+        if (!localStorage.getItem('ca_initialized')) {
+            localStorage.removeItem('ca_blunders');
+            localStorage.removeItem('ca_saved');
+            this.blunders = {};
+            this.savedItems = {};
+            localStorage.setItem('ca_initialized', 'true');
+        }
+
         this.renderTopicGrids();
         this.updateAuxGrids();
         const savedPref = localStorage.getItem('ca_palette_visible');
