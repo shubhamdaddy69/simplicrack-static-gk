@@ -14,22 +14,21 @@
 </style>
 <style>
     :root {
-    --bg: #2C1B18;        /* Dark Espresso Brown (Whole screen background) */
-    --surface: #3E2723;   /* Slightly lighter brown for the question panel */
-    --card: #4E342E;      /* Medium brown for answer options */
-    --border: #5D4037;    /* Subtle brown border to define the boxes */
-    --neon-yellow: #D7CCC8; /* Heading: Light Cream/Beige (Very visible) */
-    --sky: #8D6E63;         /* Buttons (PREV/NEXT): Warm Tan */
-    --succ: #81C784;        /* Submit Test Button: Light Green */
-    --err: #E57373;         /* Timer/Error: Light Coral Red */
-    --text: #F5F5F5;        /* QUESTION & OPTION TEXT: White/Cream (Fixes invisibility) */
-    --muted: #BCAAA4;       /* Secondary Text: Muted Tan */
+    --bg: #dce8f5;
+    --surface: #ffffff;
+    --card: #ffffff;
+    --border: #c8d8ea;
+    --neon-yellow: #1565C0;
+    --sky: #1976D2;
+    --succ: #2e7d32;
+    --err: #c62828;
+    --text: #1a1a2e;
+    --muted: #546e7a;
 }
      
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
 
-    /* HEADER */
     .app-header {
         background: var(--surface);
         border-bottom: 1px solid var(--border);
@@ -41,7 +40,7 @@
     }
     .app-header h1 { font-family: 'Orbitron'; font-size: 0.85rem; color: var(--neon-yellow); letter-spacing: 2px; }
     .app-header .subtitle { font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
-    #timer { font-family: 'Orbitron'; font-size: 1.1rem; color: var(--err); display: none; background: rgba(248,113,113,0.1); padding: 6px 14px; border-radius: 8px; border: 1px solid var(--err); }
+    #timer { font-family: 'Orbitron'; font-size: 1.1rem; color: #ffffff; display: none; background: #1565C0; padding: 7px 18px; border-radius: 8px; border: none; font-weight: 700; }
 
     /* SCREENS */
     .screen { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
@@ -208,29 +207,31 @@
     #exam-tag-display { font-size: 0.7rem; color: var(--muted); background: var(--surface); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); }
     .instruction-box { background: rgba(240,224,64,0.08); border: 1px solid rgba(240,224,64,0.3); border-radius: 8px; padding: 10px 14px; font-size: 0.8rem; color: var(--neon-yellow); margin-bottom: 12px; }
 
-    .q-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+    .q-card { background: #ffffff; border: 1px solid #c8d8ea; border-radius: 12px; padding: 20px 22px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
     .q-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-    #q-prog { font-family: 'Orbitron'; font-size: 0.8rem; color: var(--neon-yellow); }
-    #q-text { font-size: 1rem; line-height: 1.7; color: #ffffff; font-weight: 700; font-family: 'Inter', sans-serif; letter-spacing: 0px; }
+    #q-prog { font-family: 'Inter'; font-size: 1rem; color: #1a1a2e; font-weight: 700; }
+    #q-text { font-size: 1rem; line-height: 1.7; color: #1a1a2e; font-weight: 600; font-family: 'Inter', sans-serif; letter-spacing: 0px; display: inline; }
 
     .opt-btn {
         display: block; width: 100%;
         text-align: left;
-        padding: 12px 16px;
-        background: var(--surface);
-        border: 1px solid var(--border);
+        padding: 15px 20px;
+        background: #f0f4f8;
+        border: 1px solid #d0dce8;
         border-radius: 10px;
-        color: var(--text);
-        font-size: 0.92rem;
+        color: #1a1a2e;
+        font-size: 0.97rem;
         cursor: pointer;
-        margin-bottom: 8px;
-        transition: all 0.2s;
+        margin-bottom: 10px;
+        transition: background 0.15s;
+        font-weight: 400;
+        box-shadow: none;
     }
-    .opt-btn:hover { border-color: var(--sky); background: rgba(56,189,248,0.05); }
-    .opt-btn.selected { border-color: var(--sky); background: rgba(56,189,248,0.12); color: var(--sky); }
-    .opt-btn.correct-ans { border-color: #81C784; background: rgba(129,199,132,0.18); color: #81C784; font-weight: 700; cursor: not-allowed; }
-    .opt-btn.wrong-ans { border-color: #E57373; background: rgba(229,115,115,0.18); color: #E57373; font-weight: 700; cursor: not-allowed; }
-    .opt-btn.locked { cursor: not-allowed; opacity: 0.6; }
+    .opt-btn:hover { background: #eef4fb; border-color: #b0c8e0; }
+    .opt-btn.selected { background: #dbeeff; border-color: #1976D2; color: #1a1a2e; font-weight: 500; }
+    .opt-btn.correct-ans { background: #e8f5e9; border-color: #81c784; color: #2e7d32; font-weight: 600; cursor: not-allowed; }
+    .opt-btn.wrong-ans { background: #ffebee; border-color: #e57373; color: #c62828; font-weight: 600; cursor: not-allowed; }
+    .opt-btn.locked { cursor: not-allowed; }
     .ans-feedback {
         margin-top: 12px; padding: 12px 16px; border-radius: 10px;
         font-size: 0.88rem; font-weight: 600; display: flex; align-items: center; gap: 8px;
@@ -239,31 +240,35 @@
     .ans-feedback.wrong { background: rgba(229,115,115,0.15); border: 1.5px solid #E57373; color: #E57373; }
 
     /* NAV BUTTONS */
-    .nav-row { display: flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-    .nav-btn { padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 0.8rem; cursor: pointer; font-family: 'Orbitron'; transition: all 0.2s; }
-    .nav-btn:hover { border-color: var(--sky); }
-    .nav-btn.submit { border-color: var(--succ); color: var(--succ); }
-    .nav-btn.submit:hover { background: rgba(74,222,128,0.1); }
+    .nav-row { display: flex; gap: 10px; justify-content: flex-start; align-items: center; flex-wrap: wrap; }
+    .nav-btn { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--border); background: #b0bec5; color: #ffffff; font-size: 0.82rem; cursor: pointer; font-family: 'Orbitron'; transition: all 0.2s; font-weight: 700; letter-spacing: 1px; }
+    .nav-btn:hover { filter: brightness(0.92); }
+    .nav-btn.next-btn { background: #1565C0; border-color: #1565C0; color: #ffffff; }
+    .nav-btn.next-btn:hover { background: #1976D2; }
+    .nav-btn.save-btn { background: #ffffff; border: 2px solid #e6b800; color: #b8860b; font-weight: 700; }
+    .nav-btn.save-btn:hover { background: #fffde7; }
+    .nav-btn.submit { background: #2e7d32; border-color: #2e7d32; color: #ffffff; }
+    .nav-btn.submit:hover { background: #388e3c; }
     #star-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); transition: color 0.2s; }
-    #star-btn.active { color: var(--neon-yellow); }
+    #star-btn.active { color: #e6b800; }
 
     /* PALETTE */
     #palette-container { margin-top: 20px; }
     #palette-container.hidden { display: none; }
     .palette-label { font-family: 'Orbitron'; font-size: 0.65rem; color: var(--muted); margin-bottom: 10px; }
     #palette { display: flex; flex-wrap: wrap; gap: 6px; }
-    .p-num { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; transition: all 0.15s; }
-    .p-num:hover { border-color: var(--sky); }
-    .p-num.answered { background: rgba(74,222,128,0.2); border-color: var(--succ); color: var(--succ); }
-    .p-num.visited { background: rgba(248,113,113,0.15); border-color: rgba(248,113,113,0.4); }
-    .p-num.current { border-color: var(--neon-yellow); color: var(--neon-yellow); box-shadow: 0 0 8px rgba(240,224,64,0.3); }
+    .p-num { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid #b0bec5; background: #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.78rem; font-weight: 600; transition: all 0.15s; color: #37474f; }
+    .p-num:hover { border-color: #1976D2; color: #1976D2; }
+    .p-num.answered { background: rgba(46,125,50,0.15); border-color: #2e7d32; color: #2e7d32; }
+    .p-num.visited { background: rgba(198,40,40,0.10); border-color: rgba(198,40,40,0.5); color: #c62828; }
+    .p-num.current { background: #1565C0; border-color: #1565C0; color: #ffffff; box-shadow: 0 2px 8px rgba(21,101,192,0.4); }
 
     /* ANALYSIS */
     .score-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 20px; }
     .analysis-actions { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 
     .sol-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
-    .sol-box > div:first-child { color: #ffffff !important; font-weight: 700 !important; font-family: 'Inter', sans-serif !important; }
+    .sol-box > div:first-child { color: #1a1a2e !important; font-weight: 700 !important; font-family: 'Inter', sans-serif !important; }
 
     /* BLUNDER / SAVED GRIDS */
     .aux-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 15px; }
@@ -306,8 +311,8 @@
 <div class="screen active" id="screen-home">
     <div class="home-tabs">
         <button class="tab-btn active" onclick="app.switchTab('practice')">PRACTICE</button>
-        <button class="tab-btn" onclick="app.switchTab('blunders')">MY BLUNDERS</button>
-        <button class="tab-btn" onclick="app.switchTab('saved')">SAVED ITEMS</button>
+        <button class="tab-btn" onclick="app.switchTab('blunders')">MISTAKES</button>
+        <button class="tab-btn" onclick="app.switchTab('saved')">SAVED</button>
     </div>
 
     <div class="tab-content active" id="tab-practice">
@@ -318,15 +323,15 @@
     </div>
 
     <div class="tab-content" id="tab-blunders">
-        <div class="section-title">MY BLUNDERS</div>
+        <div class="section-title">MISTAKES</div>
         <div class="aux-grid" id="blunder-grid"></div>
-        <p id="blunder-empty" style="color:var(--muted); font-size:0.85rem; margin-top:20px;">No blunders recorded yet. Complete some tests first!</p>
+        <p id="blunder-empty" style="color:var(--muted); font-size:0.85rem; margin-top:20px;">No mistakes recorded yet. Complete some tests first!</p>
     </div>
 
     <div class="tab-content" id="tab-saved">
-        <div class="section-title">SAVED ITEMS</div>
+        <div class="section-title">SAVED</div>
         <div class="aux-grid" id="saved-grid"></div>
-        <p id="saved-empty" style="color:var(--muted); font-size:0.85rem; margin-top:20px;">No saved items yet. Star questions during tests to save them!</p>
+        <p id="saved-empty" style="color:var(--muted); font-size:0.85rem; margin-top:20px;">No saved items yet. Use the Save button during tests to save questions!</p>
     </div>
 </div>
 
@@ -340,32 +345,35 @@
 
 <div class="screen" id="screen-test">
     <div id="test-header">
-        <div>
-            <div id="test-header-name">MOCK TEST</div>
-            <div id="exam-tag-display" style="margin-top:5px;"></div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <button class="action-btn" onclick="app.goHome()" style="background:#f0f4f8; border:1px solid #c8d8ea; color:#37474f; font-weight:700;">🏠 HOME</button>
+            <button class="action-btn" onclick="app.goHome()" style="background:#f0f4f8; border:1px solid #c8d8ea; color:#37474f; font-weight:700;">← SETS</button>
+            <span id="attempted-badge" style="background:#fff; border:1.5px solid #2e7d32; color:#2e7d32; font-size:0.78rem; padding:5px 14px; border-radius:8px; font-weight:700;">✓ 0 Attempted</span>
+            <span id="left-badge" style="background:#fff; border:1.5px solid #c62828; color:#c62828; font-size:0.78rem; padding:5px 14px; border-radius:8px; font-weight:700;">✗ 50 Left</span>
         </div>
         <div class="test-actions">
             <button id="toggle-palette-btn" class="action-btn" onclick="app.togglePalette()">HIDE PALETTE</button>
-            <button class="action-btn warn" onclick="app.submit()">SUBMIT</button>
         </div>
     </div>
 
     <div class="q-card">
-        <div class="q-meta">
-            <span id="q-prog">Q1/50</span>
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+            <div style="flex:1; font-size:1rem; font-weight:600; color:#1a1a2e; line-height:1.7;">
+                <span id="q-prog" style="font-weight:700; color:#1a1a2e; font-family:'Inter';">Q.1: -</span>
+                <span id="q-text" style="margin-left:4px;"></span>
+            </div>
             <button id="star-btn" onclick="app.toggleBookmark()" title="Save Question">☆</button>
         </div>
-        <div id="instruction-area"></div>
-        <div id="q-text"></div>
+        <div id="instruction-area" style="margin-top:8px;"></div>
     </div>
 
     <div id="options-area"></div>
 
     <div class="nav-row" style="margin-top:14px;">
         <button class="nav-btn" onclick="app.prev()">← PREV</button>
-        <button class="nav-btn" onclick="app.clearResponse()">CLEAR</button>
-        <button class="nav-btn" onclick="app.next()">NEXT →</button>
-        <button class="nav-btn submit" onclick="app.submit()">SUBMIT TEST</button>
+        <button class="nav-btn next-btn" onclick="app.next()">NEXT →</button>
+        <button class="nav-btn save-btn" onclick="app.toggleBookmark()" id="save-nav-btn">★ SAVE</button>
+        <button class="nav-btn submit" onclick="app.submit()">SUBMIT</button>
     </div>
 
     <div id="palette-container">
@@ -64602,15 +64610,37 @@ const app = {
         if (tab === 'blunders' || tab === 'saved') this.updateAuxGrids();
     },
 
-    // Randomizes the array elements
-    shuffleArray(array) {
-        let currentIndex = array.length, randomIndex;
+    // Seeded pseudo-random number generator (Mulberry32)
+    seededRandom(seed) {
+        return function() {
+            seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+            var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+            t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+    },
+
+    // Deterministic shuffle: same topic always produces same order
+    shuffleArray(array, seed) {
+        const rand = this.seededRandom(seed);
+        const arr = array.slice();
+        let currentIndex = arr.length;
         while (currentIndex !== 0) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
+            const randomIndex = Math.floor(rand() * currentIndex);
             currentIndex--;
-            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            [arr[currentIndex], arr[randomIndex]] = [arr[randomIndex], arr[currentIndex]];
         }
-        return array;
+        return arr;
+    },
+
+    // Generates a numeric seed from a string
+    strToSeed(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = ((hash << 5) - hash) + str.charCodeAt(i);
+            hash |= 0;
+        }
+        return Math.abs(hash);
     },
 
     renderTopicGrids() {
@@ -64618,10 +64648,10 @@ const app = {
         if (!grid) return;
         
         grid.innerHTML = TOPICS.map(topic => {
-            // Parse and shuffle questions once per session
+            // Parse and shuffle questions once per session using seeded shuffle (fixed order per topic)
             if (!this.parsedBanks[topic]) {
                 let parsed = this.parseData(CA_DATA[topic] || "");
-                this.parsedBanks[topic] = this.shuffleArray(parsed); 
+                this.parsedBanks[topic] = this.shuffleArray(parsed, this.strToSeed(topic)); 
             }
             const allQs = this.parsedBanks[topic];
             
@@ -64735,7 +64765,8 @@ const app = {
         this.hideScreens();
         document.getElementById('screen-test').classList.add('active');
         document.getElementById('timer').style.display = 'block';
-        document.getElementById('test-header-name').innerText = `${topic.toUpperCase()} · SET ${num}`;
+        const testHeaderName = document.getElementById('test-header-name');
+        if (testHeaderName) testHeaderName.innerText = `${topic.toUpperCase()} · SET ${num}`;
 
         const paletteContainer = document.getElementById('palette-container');
         const toggleBtn = document.getElementById('toggle-palette-btn');
@@ -64767,15 +64798,17 @@ const app = {
 
     renderQuestion() {
         const q = this.questions[this.currentIdx];
-        document.getElementById('q-prog').innerText = `Q${this.currentIdx + 1}/${this.questions.length}`;
-        document.getElementById('exam-tag-display').innerText = q.exam || "MOCK TEST";
-        document.getElementById('instruction-area').innerHTML = q.instr ? `<div class="instruction-box">${q.instr}</div>` : '';
+        document.getElementById('q-prog').innerText = `Q.${this.currentIdx + 1}: -`;
         document.getElementById('q-text').innerText = q.q;
+        if(document.getElementById('exam-tag-display')) document.getElementById('exam-tag-display').innerText = q.exam || "MOCK TEST";
+        document.getElementById('instruction-area').innerHTML = q.instr ? `<div class="instruction-box">${q.instr}</div>` : '';
 
-        const isSaved = this.savedItems[this.currentTopic] &&
-            this.savedItems[this.currentTopic].some(x => x.q === q.q);
+        const isSaved = this.savedItems[`${this.currentTopic}__${this.currentSetNum}`] &&
+            this.savedItems[`${this.currentTopic}__${this.currentSetNum}`].some(x => x.q === q.q);
         document.getElementById('star-btn').classList.toggle('active', isSaved);
         document.getElementById('star-btn').innerText = isSaved ? '★' : '☆';
+        // Also update save nav button
+        setTimeout(() => this.renderSaveNavBtn(), 0);
 
         const userAns = this.userAns[this.currentIdx];
         const hasAnswered = userAns !== undefined;
@@ -64820,6 +64853,13 @@ const app = {
             let cls = this.userAns[i] !== undefined ? 'answered' : (this.visited.has(i) ? 'visited' : '');
             return `<div class="p-num ${cls} ${this.currentIdx === i ? 'current' : ''}" onclick="app.jump(${i})">${i + 1}</div>`;
         }).join('');
+        // Update attempted/left badges
+        const attempted = Object.keys(this.userAns).length;
+        const left = this.questions.length - attempted;
+        const ab = document.getElementById('attempted-badge');
+        const lb = document.getElementById('left-badge');
+        if (ab) ab.innerText = `✓ ${attempted} Attempted`;
+        if (lb) lb.innerText = `✗ ${left} Left`;
     },
 
     select(i) { this.userAns[this.currentIdx] = i; this.renderQuestion(); },
@@ -64844,7 +64884,7 @@ const app = {
         document.getElementById('timer').style.display = 'none';
 
         let r = 0, w = 0, s = 0;
-        const key = this.currentTopic;
+        const key = `${this.currentTopic}__${this.currentSetNum}`;
 
         if (!this.blunders[key]) this.blunders[key] = [];
 
@@ -64854,17 +64894,18 @@ const app = {
             else if (u === q.correct) r++;
             else {
                 w++;
-                if (!this.blunders[key].some(x => x.q === q.q)) this.blunders[key].push(q);
+                if (!this.blunders[key].some(x => x.q === q.q)) this.blunders[key].push({ ...q, _setQNum: i + 1 });
             }
         });
 
         const score = (r * 2) - (w * 0.5);
         this.lastStats = { score, r, w, s };
 
-        // Save attempt + exact question layout
-        if (!this.attempts[key]) this.attempts[key] = {};
-        if (!this.attempts[key][this.currentSetNum]) this.attempts[key][this.currentSetNum] = [];
-        this.attempts[key][this.currentSetNum].push({
+        // Save attempt + exact question layout (attempts keyed by topic then setNum)
+        const topicKey = this.currentTopic;
+        if (!this.attempts[topicKey]) this.attempts[topicKey] = {};
+        if (!this.attempts[topicKey][this.currentSetNum]) this.attempts[topicKey][this.currentSetNum] = [];
+        this.attempts[topicKey][this.currentSetNum].push({
             date: new Date().toLocaleString(),
             score, r, w, s,
             userAns: { ...this.userAns },
@@ -64914,14 +64955,32 @@ const app = {
 
     toggleBookmark() {
         const q = this.questions[this.currentIdx];
-        const key = this.currentTopic;
+        // Key = "topic__setNum" so saves are per subject+set
+        const key = `${this.currentTopic}__${this.currentSetNum}`;
         if (!this.savedItems[key]) this.savedItems[key] = [];
         const idx = this.savedItems[key].findIndex(x => x.q === q.q);
-        if (idx > -1) this.savedItems[key].splice(idx, 1);
-        else this.savedItems[key].push(q);
+        if (idx > -1) {
+            this.savedItems[key].splice(idx, 1);
+            if (this.savedItems[key].length === 0) delete this.savedItems[key];
+        } else {
+            // Store question with its original question number in the set
+            this.savedItems[key].push({ ...q, _setQNum: this.currentIdx + 1 });
+        }
         localStorage.setItem('ca_saved', JSON.stringify(this.savedItems));
         this.renderQuestion();
+        this.renderSaveNavBtn();
         this.updateAuxGrids();
+    },
+
+    renderSaveNavBtn() {
+        const btn = document.getElementById('save-nav-btn');
+        if (!btn) return;
+        const q = this.questions[this.currentIdx];
+        const key = `${this.currentTopic}__${this.currentSetNum}`;
+        const isSaved = this.savedItems[key] && this.savedItems[key].some(x => x.q === q.q);
+        btn.innerText = isSaved ? 'SAVED ★' : 'SAVE ☆';
+        btn.style.borderColor = isSaved ? 'var(--neon-yellow)' : '';
+        btn.style.color = isSaved ? 'var(--neon-yellow)' : '';
     },
 
     updateAuxGrids() {
@@ -64933,20 +64992,37 @@ const app = {
         const bKeys = Object.keys(this.blunders).filter(k => this.blunders[k].length > 0);
         const sKeys = Object.keys(this.savedItems).filter(k => this.savedItems[k].length > 0);
 
+        // Helper: format key "TOPIC__SET" → display label "TOPIC SET X"
+        const formatKey = (key) => {
+            const parts = key.split('__');
+            if (parts.length === 2) return `${parts[0].toUpperCase()} · SET ${parts[1]}`;
+            return key.toUpperCase();
+        };
+
+        // Helper: get question numbers as comma-separated string
+        const getQNums = (items) => {
+            const nums = items.map(q => q._setQNum).filter(Boolean).sort((a,b) => a - b);
+            return nums.length > 0 ? 'Q. ' + nums.join(', ') : `${items.length} Questions`;
+        };
+
         if (bGrid) {
             bGrid.innerHTML = bKeys.map(key => {
+                const items = this.blunders[key];
                 return `<div class="menu-card" onclick="app.viewSpecial('${key}','blunders')">
-                    <h3>${key.toUpperCase()}</h3>
-                    <p>${this.blunders[key].length} Errors</p>
+                    <h3>${formatKey(key)}</h3>
+                    <p style="color:var(--err); font-size:0.7rem; margin-top:4px;">${items.length} Mistake${items.length > 1 ? 's' : ''}</p>
+                    <p style="color:var(--muted); font-size:0.65rem; margin-top:4px; word-break:break-word;">${getQNums(items)}</p>
                 </div>`;
             }).join('');
             if (bEmpty) bEmpty.style.display = bKeys.length ? 'none' : 'block';
         }
         if (sGrid) {
             sGrid.innerHTML = sKeys.map(key => {
+                const items = this.savedItems[key];
                 return `<div class="menu-card" onclick="app.viewSpecial('${key}','saved')">
-                    <h3>${key.toUpperCase()}</h3>
-                    <p>${this.savedItems[key].length} Items</p>
+                    <h3>${formatKey(key)}</h3>
+                    <p style="color:var(--succ); font-size:0.7rem; margin-top:4px;">${items.length} Saved</p>
+                    <p style="color:var(--muted); font-size:0.65rem; margin-top:4px; word-break:break-word;">${getQNums(items)}</p>
                 </div>`;
             }).join('');
             if (sEmpty) sEmpty.style.display = sKeys.length ? 'none' : 'block';
@@ -64957,8 +65033,12 @@ const app = {
         const specialQs = type === 'blunders' ? this.blunders[topic] : this.savedItems[topic];
         if (!specialQs || specialQs.length === 0) return;
 
-        this.currentTopic = topic;
-        this.currentSetNum = 0;
+        // Format "TOPIC__SET" → "TOPIC · SET X"
+        const parts = topic.split('__');
+        const displayLabel = parts.length === 2 ? `${parts[0].toUpperCase()} · SET ${parts[1]}` : topic.toUpperCase();
+
+        this.currentTopic = parts[0] || topic;
+        this.currentSetNum = parts[1] ? parseInt(parts[1]) : 0;
 
         this.questions = specialQs;
         this.userAns = {};
@@ -64970,15 +65050,16 @@ const app = {
 
         document.getElementById('analysis-header-area').innerHTML = `
             <div class="score-box">
-                <h2 style="font-family:'Orbitron'; color:var(--sky); font-size:0.8rem; margin-bottom:8px;">${type.toUpperCase()} REVIEW</h2>
+                <h2 style="font-family:'Orbitron'; color:var(--sky); font-size:0.8rem; margin-bottom:8px;">${type === 'blunders' ? 'MISTAKES' : 'SAVED'} REVIEW</h2>
                 <h1 style="font-size:3.5rem; font-family:'Orbitron';">${specialQs.length}</h1>
-                <p style="color:var(--muted); font-size:0.8rem; margin-top:8px;">${topic.toUpperCase()}</p>
+                <p style="color:var(--muted); font-size:0.8rem; margin-top:8px;">${displayLabel}</p>
             </div>`;
 
         let html = "";
         specialQs.forEach((q, i) => {
+            const qNum = q._setQNum ? `<span style="font-size:0.7rem; color:var(--sky); background:rgba(141,110,99,0.2); padding:2px 8px; border-radius:12px; margin-left:8px;">SET Q.${q._setQNum}</span>` : '';
             html += `<div class="sol-box">
-                <div style="font-weight:bold; margin-bottom:10px; font-size:0.9rem;">Q.${i + 1} ${q.q}</div>
+                <div style="font-weight:bold; margin-bottom:10px; font-size:0.9rem;">Q.${i + 1} ${q.q}${qNum}</div>
                 ${q.options.map((o, idx) => `<div style="color:${idx === q.correct ? 'var(--succ)' : 'var(--muted)'}; padding:4px 0;">${String.fromCharCode(65 + idx)}. ${o}</div>`).join('')}
                 <div style="margin-top:10px; font-size:0.82rem; border-top:1px solid var(--border); padding-top:10px; color:var(--muted);"><b style="color:var(--text)">EXP:</b> ${q.exp}</div>
             </div>`;
@@ -65026,8 +65107,8 @@ const app = {
 
     generatePDF() {
         const time = new Date().toLocaleString();
-        let reportType = this.viewMode === 'blunders' ? 'BLUNDERS REVIEW REPORT' :
-            this.viewMode === 'saved' ? 'SAVED ITEMS REPORT' : 'EXAM PERFORMANCE REPORT';
+        let reportType = this.viewMode === 'blunders' ? 'MISTAKES REVIEW REPORT' :
+            this.viewMode === 'saved' ? 'SAVED QUESTIONS REPORT' : 'EXAM PERFORMANCE REPORT';
         let topicLabel = `${this.currentTopic.toUpperCase()}${this.currentSetNum ? ' – SET ' + this.currentSetNum : ''}`;
 
         let html = `<div style="background:#fff; color:#000; padding:20px; font-family:'Inter', sans-serif;">
