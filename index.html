@@ -291,6 +291,14 @@
     .nav-btn.save-btn { background: #ffffff; border: 2px solid #e6b800; color: #b8860b; font-weight: 700; }
     .nav-btn.save-btn:hover { background: #fffde7; }
     .nav-btn.submit { background: #2e7d32; border-color: #2e7d32; color: #ffffff; }
+    #pause-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; flex-direction:column; align-items:center; justify-content:center; gap:20px; }
+    #pause-overlay.active { display:flex; }
+    #pause-overlay h2 { color:#fff; font-family:'Orbitron'; font-size:1.4rem; letter-spacing:3px; margin:0; }
+    #pause-overlay p { color:#94a3b8; font-size:0.9rem; margin:0; }
+    #resume-btn { background:#0284c7; color:#fff; border:none; padding:14px 40px; border-radius:10px; font-family:'Orbitron'; font-size:1rem; font-weight:bold; cursor:pointer; letter-spacing:2px; }
+    #resume-btn:hover { background:#0369a1; }
+    #pause-btn { background:#f59e0b; color:#fff; border:none; padding:6px 14px; border-radius:8px; font-family:'Orbitron'; font-size:0.65rem; font-weight:bold; cursor:pointer; }
+    #pause-btn:hover { background:#d97706; }
     .nav-btn.submit:hover { background: #388e3c; }
     #star-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); transition: color 0.2s; }
     #star-btn.active { color: #e6b800; }
@@ -338,7 +346,12 @@
             <div class="subtitle">Static Topics Practice Dashboard</div>
         </div>
     </div>
-    <div id="timer">20:00</div>
+    <div style="display:flex;align-items:center;gap:8px;"><div id="timer">20:00</div><button id="pause-btn" onclick="app.pauseTest()" style="display:none;background:#f59e0b;color:#fff;border:none;padding:6px 12px;border-radius:8px;font-family:Orbitron;font-size:0.65rem;font-weight:bold;cursor:pointer;">⏸ PAUSE</button></div>
+</div>
+<div id="pause-overlay">
+    <h2>⏸ PAUSED</h2>
+    <p>Your test is paused. Timer is stopped.</p>
+    <button id="resume-btn" onclick="app.resumeTest()">▶ RESUME TEST</button>
 </div>
 
 <div class="modal-overlay" id="set-modal">
@@ -393,7 +406,7 @@
     <div id="test-header">
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
             <button class="action-btn" onclick="app.goHome()" style="background:#f0f4f8; border:1px solid #c8d8ea; color:#37474f; font-weight:700;">🏠 HOME</button>
-            <button class="action-btn" onclick="app.goHome()" style="background:#f0f4f8; border:1px solid #c8d8ea; color:#37474f; font-weight:700;">← SETS</button>
+            <button class="action-btn" style="background:#4285f4;color:#fff;border:none;" onclick="app.openGoogle()">🔍 GOOGLE</button>
             <span id="attempted-badge" style="background:#fff; border:1.5px solid #2e7d32; color:#2e7d32; font-size:0.78rem; padding:5px 14px; border-radius:8px; font-weight:700;">✓ 0 Attempted</span>
             <span id="left-badge" style="background:#fff; border:1.5px solid #c62828; color:#c62828; font-size:0.78rem; padding:5px 14px; border-radius:8px; font-weight:700;">✗ 50 Left</span>
         </div>
@@ -71491,6 +71504,8 @@ const app = {
         this.hideScreens();
         document.getElementById('screen-test').classList.add('active');
         document.getElementById('timer').style.display = 'block';
+        document.getElementById('pause-btn').style.display = 'inline-block';
+        this.paused = false;
         document.getElementById('timer').innerText = '20:00';
         const testHeaderName = document.getElementById('test-header-name');
         if (testHeaderName) testHeaderName.innerText = `${topic.toUpperCase()} · SET ${num}`;
@@ -71594,7 +71609,30 @@ const app = {
     jump(i) { this.currentIdx = i; this.visited.add(i); this.renderQuestion(); },
     next() { if (this.currentIdx < this.questions.length - 1) { this.currentIdx++; this.visited.add(this.currentIdx); this.renderQuestion(); } },
     prev() { if (this.currentIdx > 0) { this.currentIdx--; this.renderQuestion(); } },
+    openGoogle() {
+        const q = this.questions[this.currentIdx];
+        if (!q) return;
+        const optsText = q.options.map((o, i) => `${String.fromCharCode(65+i)}. ${o}`).join(' | ');
+        const text = `${q.q} | ${optsText}`;
+        window.open('https://www.google.com/search?q=' + encodeURIComponent(text), '_blank');
+    },
 
+
+    pauseTest() {
+        if (this.paused) return;
+        this.paused = true;
+        clearInterval(this.interval);
+        document.getElementById('pause-overlay').classList.add('active');
+        document.getElementById('pause-btn').textContent = '▶ RESUME';
+        document.getElementById('pause-btn').onclick = () => this.resumeTest();
+    },
+    resumeTest() {
+        this.paused = false;
+        document.getElementById('pause-overlay').classList.remove('active');
+        document.getElementById('pause-btn').textContent = '⏸ PAUSE';
+        document.getElementById('pause-btn').onclick = () => this.pauseTest();
+        this.startTimer();
+    },
     startTimer() {
         clearInterval(this.interval);
         this.interval = setInterval(() => {
@@ -71609,6 +71647,8 @@ const app = {
         if (!auto && !confirm("Submit Test?")) return;
         clearInterval(this.interval);
         document.getElementById('timer').style.display = 'none';
+        document.getElementById('pause-btn').style.display = 'none';
+        document.getElementById('pause-overlay').classList.remove('active');
 
         let r = 0, w = 0, s = 0;
         const key = `${this.currentTopic}__${this.currentSetNum}`;
