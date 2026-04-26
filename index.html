@@ -66990,6 +66990,7 @@ const app = {
         document.getElementById('screen-test').classList.add('active');
         document.getElementById('timer').style.display = 'block';
         document.getElementById('pause-btn').style.display = 'inline-block';
+        document.getElementById('theme-toggle-wrap').style.display = 'none';
         this.paused = false;
         document.getElementById('timer').innerText = '20:00';
         const testHeaderName = document.getElementById('test-header-name');
@@ -67132,6 +67133,7 @@ const app = {
         if (!auto && !confirm("Submit Test?")) return;
         clearInterval(this.interval);
         document.getElementById('timer').style.display = 'none';
+        document.getElementById('theme-toggle-wrap').style.display = '';
         document.getElementById('pause-btn').style.display = 'none';
         document.getElementById('pause-overlay').classList.remove('active');
 
@@ -67420,6 +67422,7 @@ const app = {
         document.getElementById('screen-home').classList.add('active');
         clearInterval(this.interval);
         document.getElementById('timer').style.display = 'none';
+        document.getElementById('theme-toggle-wrap').style.display = '';
         this.renderTopicGrids();
         this.updateAuxGrids();
     }
