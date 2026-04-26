@@ -576,6 +576,7 @@
 <div class="screen active" id="screen-home">
     <div class="home-tabs">
         <button class="tab-btn active" onclick="app.switchTab('practice')">PRACTICE</button>
+        <button class="tab-btn" onclick="app.switchTab('ordered')">ORDERED</button>
         <button class="tab-btn" onclick="app.switchTab('blunders')">MISTAKES</button>
         <button class="tab-btn" onclick="app.switchTab('saved')">SAVED</button>
     </div>
@@ -584,6 +585,13 @@
         <div class="year-section">
             <div class="year-label">STATIC TOPICS (1 TO 100)</div>
             <div class="topics-grid" id="grid-topics"></div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="tab-ordered">
+        <div class="year-section">
+            <div class="year-label">ORDERED — ORIGINAL QUESTION ORDER</div>
+            <div class="topics-grid" id="grid-ordered"></div>
         </div>
     </div>
 
@@ -66814,9 +66822,78 @@ const app = {
                 <div class="attempt-badge ${totalAttempts > 0 ? 'has-attempts' : 'no-attempts'}">${totalAttempts > 0 ? totalAttempts + ' Attempt' + (totalAttempts > 1 ? 's' : '') : (totalSets > 0 ? 'Not Started' : 'Empty')}</div>
             </div>`;
         }).join('');
+
+        this.renderOrderedGrid();
     },
 
-    showTopicSets(topic) {
+    renderOrderedGrid() {
+        const grid = document.getElementById('grid-ordered');
+        if (!grid) return;
+
+        grid.innerHTML = TOPICS.map(topic => {
+            if (!this.parsedBanksOrdered) this.parsedBanksOrdered = {};
+            if (!this.parsedBanksOrdered[topic]) {
+                this.parsedBanksOrdered[topic] = this.parseData(CA_DATA[topic] || "");
+            }
+            const allQs = this.parsedBanksOrdered[topic];
+
+            const totalSets = allQs.length > 0 ? Math.ceil(allQs.length / 50) : 0;
+            const attemptsForTopic = this.attempts[topic] || {};
+            const totalAttempts = Object.values(attemptsForTopic).reduce((sum, arr) => sum + arr.length, 0);
+
+            const iconMap = {
+                '1. FOLK DANCES':'💃', '2. MARTIAL ARTS':'🥋', '3. FOLK THEATRES':'🎭',
+                '4. FAIRS & FESTIVAL':'🎪', '5. CLASSICAL DANCE':'🩰', '6. KATHAK GHARANA':'🎶',
+                '7. MUSIC & GHARANA':'🎵', '8. MUSICAL INSTRUMENTS & EXPONENTS':'🎸',
+                '9. FOLK MUSIC':'🪘', '10. Folk Paintings':'🎨', '11. Traditional Dress':'👘',
+                '12. Tribes':'🏕️', '13. Unesco Sites':'🏛️', '14. Temples & Mosques':'🕌',
+                '15. monasteries':'⛩️', '90. Formula & calc':'🔢', '91. History Basics':'📜',
+                '92. Rabi & kharif ':'🌾', '93. committees & commissions':'📋',
+                '94. schedules & parts':'📑', '95. polity articles':'⚖️', '96. wars':'⚔️',
+                '97. governor generals':'👑', '98. company acts 1773-1935':'📰',
+                '99. Important judgements':'🏛️', '100. constitutional amendments ':'📝'
+            };
+            const icon = iconMap[topic] || '📚';
+            return `<div class="set-card" onclick="app.showTopicSetsOrdered('${topic}')">
+                <div class="card-icon">${icon}</div>
+                <h3>${topic.toUpperCase()}</h3>
+                <div class="set-info">${allQs.length} Qs ${totalSets > 0 ? ' · ' + totalSets + ' SET' + (totalSets > 1 ? 'S' : '') : ''}</div>
+                <div class="attempt-badge ${totalAttempts > 0 ? 'has-attempts' : 'no-attempts'}">${totalAttempts > 0 ? totalAttempts + ' Attempt' + (totalAttempts > 1 ? 's' : '') : (totalSets > 0 ? 'Not Started' : 'Empty')}</div>
+            </div>`;
+        }).join('');
+    },
+
+    showTopicSetsOrdered(topic) {
+        if (!this.parsedBanksOrdered) this.parsedBanksOrdered = {};
+        if (!this.parsedBanksOrdered[topic]) {
+            this.parsedBanksOrdered[topic] = this.parseData(CA_DATA[topic] || "");
+        }
+        this.currentTopic = topic;
+        const allQs = this.parsedBanksOrdered[topic];
+        this.hideScreens();
+        document.getElementById('screen-sets').classList.add('active');
+        document.getElementById('set-title').innerText = `${topic.toUpperCase()} · ORDERED`;
+        const container = document.getElementById('set-list-container');
+        container.innerHTML = '';
+
+        if (allQs.length === 0) {
+            container.innerHTML = '<p style="color:var(--muted); text-align:center; grid-column:1/-1; padding:30px 0;">No questions pasted yet. Add them in the code!</p>';
+            return;
+        }
+
+        for (let i = 0; i < allQs.length; i += 50) {
+            const setNum = Math.floor(i / 50) + 1;
+            const chunk = allQs.slice(i, i + 50);
+            const setAttempts = (this.attempts[topic] && this.attempts[topic][setNum]) ? this.attempts[topic][setNum] : [];
+            const btn = document.createElement('div');
+            btn.className = 'set-card';
+            btn.onclick = () => app.openSetModal(topic, setNum, chunk);
+            btn.innerHTML = `<h3>SET ${setNum}</h3>
+                <div class="set-info">Q ${i + 1}–${Math.min(i + 50, allQs.length)} · ORDERED</div>
+                <div class="attempt-badge ${setAttempts.length > 0 ? 'has-attempts' : 'no-attempts'}">${setAttempts.length > 0 ? `${setAttempts.length} Attempt${setAttempts.length > 1 ? 's' : ''}` : 'Not Attempted'}</div>`;
+            container.appendChild(btn);
+        }
+    },
         this.currentTopic = topic;
         const allQs = this.parsedBanks[topic] || [];
         this.hideScreens();
