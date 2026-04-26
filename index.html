@@ -624,7 +624,7 @@
     <div class="q-card">
         <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
             <div style="flex:1; font-size:1rem; font-weight:600; line-height:1.7;">
-                <span id="q-prog" style="font-weight:700; font-family:'Inter';">Q.1: -</span>
+                <span id="q-prog" style="font-weight:700; font-family:'Inter';">Q.1:</span>
                 <span id="q-text" style="margin-left:4px;"></span>
             </div>
             <button id="star-btn" onclick="app.toggleBookmark()" title="Save Question">☆</button>
@@ -66950,7 +66950,7 @@ const app = {
 
     renderQuestion() {
         const q = this.questions[this.currentIdx];
-        document.getElementById('q-prog').innerText = `Q.${this.currentIdx + 1}: -`;
+        document.getElementById('q-prog').innerText = `Q.${this.currentIdx + 1}:`;
         document.getElementById('q-text').innerText = q.q;
         if(document.getElementById('exam-tag-display')) document.getElementById('exam-tag-display').innerText = q.exam || "MOCK TEST";
         document.getElementById('instruction-area').innerHTML = q.instr ? `<div class="instruction-box">${q.instr}</div>` : '';
