@@ -246,6 +246,7 @@
     .action-btn:hover { border-color: var(--sky); color: var(--sky); }
     .action-btn.warn { border-color: var(--err); color: var(--err); }
     .action-btn.warn:hover { background: rgba(248,113,113,0.1); }
+    .test-top-btn { padding: 8px 4px; font-size: 0.72rem; font-family: 'Orbitron'; border-radius: 8px; cursor: pointer; text-align: center; width: 100%; box-sizing: border-box; min-height: 36px; }
 
     #exam-tag-display { font-size: 0.7rem; color: var(--muted); background: var(--surface); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); }
     .instruction-box { background: rgba(240,224,64,0.08); border: 1px solid rgba(240,224,64,0.3); border-radius: 8px; padding: 10px 14px; font-size: 0.8rem; color: var(--neon-yellow); margin-bottom: 12px; }
@@ -283,8 +284,8 @@
     .ans-feedback.wrong { background: rgba(229,115,115,0.15); border: 1.5px solid #E57373; color: #E57373; }
 
     /* NAV BUTTONS */
-    .nav-row { display: flex; gap: 10px; justify-content: flex-start; align-items: center; flex-wrap: wrap; }
-    .nav-btn { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--border); background: #b0bec5; color: #ffffff; font-size: 0.82rem; cursor: pointer; font-family: 'Orbitron'; transition: all 0.2s; font-weight: 700; letter-spacing: 1px; }
+    .nav-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+    .nav-btn { padding: 10px 4px; border-radius: 8px; border: 1px solid var(--border); background: #b0bec5; color: #ffffff; font-size: 0.72rem; cursor: pointer; font-family: 'Orbitron'; transition: all 0.2s; font-weight: 700; letter-spacing: 0.5px; text-align: center; width: 100%; }
     .nav-btn:hover { filter: brightness(0.92); }
     .nav-btn.next-btn { background: #1565C0; border-color: #1565C0; color: #ffffff; }
     .nav-btn.next-btn:hover { background: #1976D2; }
@@ -583,7 +584,7 @@
 
     <div class="tab-content active" id="tab-practice">
         <div class="year-section">
-            <div class="year-label">STATIC TOPICS (1 TO 100)</div>
+            <div class="year-label">STATIC TOPICS (1 TO 120)</div>
             <div class="topics-grid" id="grid-topics"></div>
         </div>
     </div>
@@ -617,14 +618,14 @@
 </div>
 
 <div class="screen" id="screen-test">
-    <div id="test-header">
-        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-            <button class="action-btn" onclick="app.goHome()" style="background:#f0f4f8; border:1px solid #c8d8ea; color:#37474f; font-weight:700;">🏠 HOME</button>
-            <button class="action-btn" style="background:#4285f4;color:#fff;border:none;" onclick="app.openGoogle()">🔍 GOOGLE</button>
-            <span id="attempted-badge" style="background:#fff; border:1.5px solid #2e7d32; color:#2e7d32; font-size:0.78rem; padding:5px 14px; border-radius:8px; font-weight:700;">✓ 0 Attempted</span>
-            <span id="left-badge" style="background:#fff; border:1.5px solid #c62828; color:#c62828; font-size:0.78rem; padding:5px 14px; border-radius:8px; font-weight:700;">✗ 50 Left</span>
+    <div id="test-header" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px; width:100%;">
+            <button class="action-btn test-top-btn" onclick="app.goHome()" style="background:#f0f4f8; border:1px solid #c8d8ea; color:#37474f; font-weight:700;">🏠 HOME</button>
+            <button class="action-btn test-top-btn" style="background:#4285f4;color:#fff;border:none;" onclick="app.openGoogle()">🔍 GOOGLE</button>
+            <span id="attempted-badge" class="test-top-btn" style="background:#fff; border:1.5px solid #2e7d32; color:#2e7d32; font-size:0.72rem; border-radius:8px; font-weight:700; display:flex; align-items:center; justify-content:center; text-align:center;">✓ 0 Done</span>
+            <span id="left-badge" class="test-top-btn" style="background:#fff; border:1.5px solid #c62828; color:#c62828; font-size:0.72rem; border-radius:8px; font-weight:700; display:flex; align-items:center; justify-content:center; text-align:center;">✗ 50 Left</span>
         </div>
-        <div class="test-actions">
+        <div style="display:flex; justify-content:flex-end;">
             <button id="toggle-palette-btn" class="action-btn" onclick="app.togglePalette()">HIDE PALETTE</button>
         </div>
     </div>
@@ -642,7 +643,7 @@
 
     <div id="options-area"></div>
 
-    <div class="nav-row" style="margin-top:14px;">
+    <div class="nav-row" style="margin-top:14px; display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
         <button class="nav-btn" onclick="app.prev()">← PREV</button>
         <button class="nav-btn next-btn" onclick="app.next()">NEXT →</button>
         <button class="nav-btn save-btn" onclick="app.toggleBookmark()" id="save-nav-btn">★ SAVE</button>
@@ -29497,8 +29498,32 @@ Correct Answer: C
     "Static 87": ``,
     "Static 88": ``,
     "Static 89": ``,
-    "90. ": ``,
-    "91. History Basics": `Q.1 What is another name for the Indus Valley Civilization?
+    "Static 90": ``,
+    "Static 91": ``,
+  
+    "Static 92": ``,
+    "Static 93": ``,
+  
+    "Static 94": ``,
+  
+    "Static 95": ``,
+    "Static 96": ``,
+    "Static 97": ``,
+    "Static 98": ``,
+    "Static 99": ``,
+    "Static 100": ``
+,
+    "Static 101": ``,
+    "Static 102": ``,
+    "Static 103": ``,
+    "Static 104": ``,
+    "Static 105": ``,
+    "Static 106": ``,
+    "Static 107": ``,
+    "Static 108": ``,
+    "Static 109": ``,
+    "Static 110": ``,
+    "111. History Basics": `Q.1 What is another name for the Indus Valley Civilization?
 A. Dravidian Civilization
 B. Harappan Civilization
 C. Aryan Civilization
@@ -36432,8 +36457,7 @@ C. 1930–1932
 D. 1933–1935
 Correct Answer: C
 `,
-  
-    "92. Rabi & kharif ": `Q.1 - Which of the following is a Kharif crop?
+    "112. Rabi & kharif": `Q.1 - Which of the following is a Kharif crop?
 A. Wheat
 B. Mustard
 C. Rice
@@ -38182,7 +38206,7 @@ B. Cotton
 C. Barley
 D. Soyabean
 Correct Answer: C`,
-    "93. committees & commissions": `Q.1 - Which committee was appointed by the Government of India in 1948 to examine the feasibility of reorganization of states on a linguistic basis?
+    "113. committees & commissions": `Q.1 - Which committee was appointed by the Government of India in 1948 to examine the feasibility of reorganization of states on a linguistic basis?
 A. JVP Committee
 B. Dhar Commission
 C. Fazl Ali Commission
@@ -41681,8 +41705,7 @@ B. Banking reforms
 C. Electoral transparency
 D. Environmental law
 Correct Answer: A`,
-  
-    "94. schedules & parts": `Q.1 - Which Schedule of the Indian Constitution contains the names of the States and specifies their territorial jurisdiction?
+    "114. schedules & parts": `Q.1 - Which Schedule of the Indian Constitution contains the names of the States and specifies their territorial jurisdiction?
 A. First Schedule
 B. Second Schedule
 C. Third Schedule
@@ -41947,8 +41970,7 @@ B. Short Title, Commencement, Authoritative Text in Hindi and Repeals
 C. Emergency Provisions
 D. Services under the Union
 Correct Answer: B`,
-  
-    "95. polity articles": `Q.1 - Article 1(1) states: "India, that is Bharat, shall be a ________":
+    "115. polity articles": `Q.1 - Article 1(1) states: "India, that is Bharat, shall be a ________":
 A. Federation of States
 B. Union of States
 C. Confederation of States
@@ -48801,7 +48823,7 @@ Correct Answer: B
 
 
 `,
-    "96. wars": `
+    "116. wars": `
 Q.1 - Battle of Dasrajan: When did it occur?
 A. 326 B.C.
 B. 14th C. BC
@@ -49375,7 +49397,7 @@ B. Sino-Indian War
 C. Indo-Pak War 1965
 D. Kargil War
 Correct Answer: B`,
-    "97. governor generals": `Q.1 - Who was the first Governor-General of Bengal, serving from 1773 to 1785?
+    "117. governor generals": `Q.1 - Who was the first Governor-General of Bengal, serving from 1773 to 1785?
 A. Lord Cornwallis
 B. Warren Hastings
 C. Sir John Macpherson
@@ -52387,7 +52409,7 @@ B. Lord Amherst
 C. Lord William Bentinck
 D. Lord Auckland
 Correct Answer: B`,
-    "98. company acts 1773-1935": `Q.1 - Which British Prime Minister appointed the "Secret Committee" that led to the passage of the Regulating Act of 1773?
+    "118. company acts 1773-1935": `Q.1 - Which British Prime Minister appointed the "Secret Committee" that led to the passage of the Regulating Act of 1773?
 A. William Pitt the Younger
 B. Lord North
 C. Robert Walpole
@@ -57044,7 +57066,7 @@ D. The People of India
 Correct Answer: B
 
 `,
-    "99. Important judgements": `Q.1 - In the A.K. Gopalan v. State of Madras (1950) case, the Supreme Court interpreted "Procedure Established by Law" under Article 21 as:
+    "119. Important judgements": `Q.1 - In the A.K. Gopalan v. State of Madras (1950) case, the Supreme Court interpreted "Procedure Established by Law" under Article 21 as:
 A. Due Process of Law
 B. Principles of Natural Justice
 C. Any law enacted by a competent legislature
@@ -60195,7 +60217,7 @@ D. None of the above
 Correct Answer: A
 
 `,
-    "100. constitutional amendments ": `Q.1 - The 1st Amendment (1951) added which Schedule to the Constitution to protect land reform laws?
+    "120. constitutional amendments": `Q.1 - The 1st Amendment (1951) added which Schedule to the Constitution to protect land reform laws?
 A. 8th Schedule
 B. 9th Schedule
 C. 10th Schedule
